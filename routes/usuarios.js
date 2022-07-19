@@ -2,8 +2,11 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 
 const { validarCampos } = require('../middlewares/valida-campos');
-const { usuariosGet, usuariosPost, usuariosPut, usuariosDelete } = require('../controllers/usuarios');
+const { validarJWT } = require('../middlewares/validar-jwt');
+const { esAdminRole, tieneRoles } = require('../middlewares/validar-roles');
+
 const { esRoleValido, emailExiste, existeUsuarioPorId } = require('../helpers/db-validators');
+const { usuariosGet, usuariosPost, usuariosPut, usuariosDelete } = require('../controllers/usuarios');
 
 const router = Router();
 
@@ -33,6 +36,9 @@ usuariosPut ); // Ahora debe recibir siempre un id. Sale error si no se envia un
 
 // Peticion delete "Eliminar". Se llama al controlador
 router.delete('/:id', [
+    esAdminRole, // Valida que el usuario debe ser administrador
+    tieneRoles('ADMIN_ROLE, VENTAS_ROLE'), // Valida que el usuario tenga uno de los dos roles
+    validarJWT, // Se valida el jwt
     check('id', 'No es un id valido').isMongoId(), // Se valida si el id es valido
     check('id').custom( existeUsuarioPorId ), // Se valida el id existe en la DB
     validarCampos

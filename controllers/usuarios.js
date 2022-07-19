@@ -67,7 +67,7 @@ const usuariosDelete = async (req, res = response) => {
     // const usuario = await Usuario.findByIdAndDelete( id ); 
 
     // Forma correcta de eliminar: Se desactiva el estado para no perder la integridad de los datos
-    const usuario = await Usuario.findByIdAndUpdate( id, { estado: false }); 
+    const usuario = await Usuario.findByIdAndUpdate( id, { estado: false }, {new: true}); 
 
     res.json({
         usuario

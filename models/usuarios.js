@@ -35,8 +35,9 @@ const UsuarioSchema = Schema({
 });
 
 // Se evita mostrar informacion confidencial al devolver el archivo json como respuesta a la solicitud. En este caso, la contraseña
-UsuarioSchema.methods.toJson = function() {
-    const { __v, password, ...usuario} = this.toObject();
+UsuarioSchema.methods.toJSON = function() {
+    const { __v, password, _id, ...usuario } = this.toObject();
+    usuario.uid = _id;
     return usuario;
 }
 
